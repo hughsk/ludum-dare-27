@@ -99,15 +99,7 @@ var player = bs.component('player')
       this.shootTimer -= 1
     } else
     if (this.controls.shoot) {
-      this.shootTimer = 10
-      var bullet = new Bullet
-      bullet.body.SetPosition(new b2Vec2(
-          this.body.m_xf.position.x
-        , this.body.m_xf.position.y - 1
-      ))
-
-      bullet.body.ApplyImpulse({ x: 0, y: -50 }, bullet.body.GetWorldCenter())
-      this.game.add(bullet)
+      this.fireBullet()
     }
 
     if (this.controls.jump && this.b2p.jump()) {
@@ -141,3 +133,24 @@ module.exports = bs.define()
   .use(require('../components/physical'))
   .use(require('../components/controllable'))
   .use(player)
+
+module.exports.prototype.fireBullet = function() {
+  this.shootTimer = 10
+  var bullet = new Bullet
+  var tx = this.game.mouse.x - this.game.width / 2
+  var ty = this.game.mouse.y - this.game.height / 2
+  var a = Math.atan2(ty, tx)
+  var rx = Math.cos(a)
+  var ry = Math.sin(a)
+
+  bullet.body.SetPosition(new b2Vec2(
+      this.body.m_xf.position.x + rx * 0.5
+    , this.body.m_xf.position.y + ry * 0.5
+  ))
+
+  bullet.body.ApplyImpulse({
+      x: rx * 35 + this.body.m_linearVelocity.x
+    , y: ry * 35 + this.body.m_linearVelocity.y
+  }, bullet.body.GetWorldCenter())
+  this.game.enqueue(bullet)
+}

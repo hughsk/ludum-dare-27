@@ -17,6 +17,8 @@ function Game(canvas) {
 
   Manager.call(this)
 
+  this.queue = []
+
   this.canvas = canvas
   this.ctx = canvas.getContext('2d')
   this.width = canvas.width
@@ -50,9 +52,17 @@ Game.prototype.tick = function() {
   this.world.Step(this.tickrate, 8, 3)
   this.camera.tick()
 
-  var l = this.instances.length
-  for (var i = 0; i < l; i += 1)
+  for (var i = 0; i < this.queue.length; i += 1)
+    this.add(this.queue[i])
+  this.queue.length = 0
+
+  for (var i = 0; i < this.instances.length; i += 1)
     this.instances[i].trigger('tick')
+  for (var i = 0; i < this.instances.length; i += 1)
+    if (this.instances[i].flagged) {
+      this.instances[i].trigger('destroy')
+      i -= 1
+    }
 }
 
 Game.prototype.draw = function() {
@@ -100,4 +110,8 @@ Game.prototype.draw = function() {
 
   // this.ctx.restore()
   this.camera.draw()
+}
+
+Game.prototype.enqueue = function(entity) {
+  this.queue.push(entity)
 }

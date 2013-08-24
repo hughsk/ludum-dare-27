@@ -23,11 +23,13 @@ module.exports = bs.define()
     },
     function createFixture() {
       var fd = new b2FixtureDef
+      fd.restitution = 0.5
       fd.shape = new b2CircleShape(0.5/3)
       return fd
     }
   ))
-  .use(require('../components/draw-circle')(5))
+  .use(require('../components/bounce-burst'))
+  .use(require('../components/draw-circle')(5, '#EA6437'))
   .use(require('../components/harmful')(false))
   .use(require('../components/projectile')({
     key: 'shooter'

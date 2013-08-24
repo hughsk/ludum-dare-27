@@ -28,6 +28,12 @@
     "kb-controls": "0.0.2",
     "ticker": "0.0.1",
     "bindlestiff": "0.0.0",
-    "tune": "~0.2.0"
+    "tune": "~0.2.0",
+    "inherits": "~2.0.1",
+    "box2dweb-commonjs": "~2.1.0",
+    "zeros": "0.0.0",
+    "ndarray-continuous": "~0.4.1",
+    "cave-automata-2d": "~0.3.1",
+    "continuous-box2d": "0.0.0"
   }
 }

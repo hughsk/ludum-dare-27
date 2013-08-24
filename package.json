@@ -7,7 +7,7 @@
   "private": true,
   "description": "ERROR: No README.md file found!",
   "scripts": {
-    "start": "beefy index.js:bundle.js --live",
+    "start": "node server.js",
     "bundle": "browserify index.js | uglifyjs -c > bundle.js",
     "test": "say sorry"
   },
@@ -18,7 +18,9 @@
   "devDependencies": {
     "beefy": "~0.4.1",
     "browserify": "~2.28.0",
-    "uglify-js": "~2.4.0"
+    "uglify-js": "~2.4.0",
+    "watchify": "~0.1.0",
+    "ecstatic": "~0.4.7"
   },
   "dependencies": {
     "image-loaded": "0.0.2",

@@ -35,6 +35,7 @@
     "ndarray-continuous": "~0.4.1",
     "cave-automata-2d": "~0.3.1",
     "continuous-box2d": "0.0.0",
-    "continuous-observer": "~0.1.1"
+    "continuous-observer": "~0.1.1",
+    "box2d-player": "~0.1.0"
   }
 }

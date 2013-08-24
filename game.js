@@ -1,6 +1,7 @@
 var Manager = require('bindlestiff/manager')
 var inherits = require('inherits')
 var trap = require('pointer-trap')
+
 var camera = require('./lib/camera')
 var field = require('./lib/field')
 
@@ -19,6 +20,7 @@ function Game(canvas) {
   this.ctx = canvas.getContext('2d')
   this.width = canvas.width
   this.height = canvas.height
+  this.tickrate = 1000 / 60
 
   this.gravity = new b2Vec2(0, 50)
   this.world = new b2World(this.gravity, true)
@@ -33,7 +35,16 @@ function Game(canvas) {
 }
 inherits(Game, Manager)
 
+// Important: components and the like should be
+// required HERE, NOT ABOVE. Weird circular dependency
+// issues.
+Game.prototype.start = function() {
+  this.player = new (require('./entities/player'))
+  this.add(this.player)
+}
+
 Game.prototype.tick = function() {
+  this.world.Step(this.tickrate, 8, 3)
   this.camera.tick()
 
   var l = this.instances.length
@@ -60,8 +71,8 @@ Game.prototype.draw = function() {
     if (data.type === 'wall') {
       ctx.fillStyle = '#444'
       ctx.strokeStyle = '#f00'
-      var x = data.pos[0] * 30 + 1 - camx + width / 2
-        , y = data.pos[1] * 30 + 1 - camy + height / 2
+      var x = data.pos[0] * 30 + 1 - camx
+        , y = data.pos[1] * 30 + 1 - camy
         , w = data.pos[2] * 30 - 2
         , h = data.pos[3] * 30 - 2
       if (
@@ -78,7 +89,7 @@ Game.prototype.draw = function() {
 
   var l = this.instances.length
   for (var i = 0; i < l; i += 1)
-    this.instances[i].trigger('draw')
+    this.instances[i].trigger('draw', ctx, this)
 
   ctx.fillStyle = '#0f0'
   ctx.fillRect(mousex - 3, mousey - 3, 6, 6)

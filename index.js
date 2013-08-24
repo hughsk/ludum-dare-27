@@ -1,14 +1,10 @@
 var ticker = require('ticker')
-var createGame = require('./game')
-var canvas = document.getElementById('main')
+var game = require('./game-instance')
 
-canvas.width = 800
-canvas.height = 600
-
-var game = createGame(canvas)
-
-ticker(canvas, 60, 3)
+ticker(game.canvas, 60, 3)
   .on('tick', function() { game.tick() })
   .on('draw', function() { game.draw() })
 
-document.body.appendChild(canvas)
+process.nextTick(function() {
+  game.start()
+})

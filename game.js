@@ -93,4 +93,6 @@ Game.prototype.draw = function() {
 
   ctx.fillStyle = '#0f0'
   ctx.fillRect(mousex - 3, mousey - 3, 6, 6)
+
+  this.camera.draw()
 }

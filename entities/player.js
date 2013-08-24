@@ -14,7 +14,7 @@ var special = bs.component('player')
     var y = this.game.height / 60
 
     var def = new b2BodyDef
-    def.position = new b2Vec2(x, y)
+    def.position = new b2Vec2(0, 0)
     def.type = b2Body.b2_dynamicBody
     def.userData = null
     def.fixedRotation = true

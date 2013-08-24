@@ -36,6 +36,8 @@
     "cave-automata-2d": "~0.3.1",
     "continuous-box2d": "0.0.0",
     "continuous-observer": "~0.1.1",
-    "box2d-player": "~0.1.0"
+    "box2d-player": "~0.1.0",
+    "fps": "0.0.3",
+    "raf": "0.0.3"
   }
 }

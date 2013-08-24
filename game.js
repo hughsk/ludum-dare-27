@@ -1,6 +1,7 @@
 var Manager = require('bindlestiff/manager')
 var inherits = require('inherits')
 var trap = require('pointer-trap')
+var fps = require('fps')
 
 var camera = require('./lib/camera')
 var field = require('./lib/field')
@@ -20,9 +21,9 @@ function Game(canvas) {
   this.ctx = canvas.getContext('2d')
   this.width = canvas.width
   this.height = canvas.height
-  this.tickrate = 1000 / 60
+  this.tickrate = 1 / 60
 
-  this.gravity = new b2Vec2(0, 50)
+  this.gravity = new b2Vec2(0, 40)
   this.world = new b2World(this.gravity, true)
 
   this.field = field(this)
@@ -43,7 +44,9 @@ Game.prototype.start = function() {
   this.add(this.player)
 }
 
+var framecounter = fps({ every: 1, decay: 0.5 })
 Game.prototype.tick = function() {
+  framecounter.tick()
   this.world.Step(this.tickrate, 8, 3)
   this.camera.tick()
 

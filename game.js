@@ -49,6 +49,8 @@ Game.prototype.draw = function() {
   var width = this.width
   var height = this.height
   var ctx = this.ctx
+  var mousex = this.mouse.x
+  var mousey = this.mouse.y
   var camx = this.camera.pos[0]
   var camy = this.camera.pos[1]
 
@@ -77,4 +79,7 @@ Game.prototype.draw = function() {
   var l = this.instances.length
   for (var i = 0; i < l; i += 1)
     this.instances[i].trigger('draw')
+
+  ctx.fillStyle = '#0f0'
+  ctx.fillRect(mousex - 3, mousey - 3, 6, 6)
 }

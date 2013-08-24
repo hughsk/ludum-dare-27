@@ -38,6 +38,8 @@
     "continuous-observer": "~0.1.1",
     "box2d-player": "~0.1.0",
     "fps": "0.0.3",
-    "raf": "0.0.3"
+    "raf": "0.0.3",
+    "perlin": "~1.0.0",
+    "ndarray-fill": "~0.1.0"
   }
 }

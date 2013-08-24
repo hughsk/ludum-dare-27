@@ -14,7 +14,10 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2
 var b2Body = Box2D.Dynamics.b2Body
 var tempPosition = [0,0]
 
-var player = bs.component('player')
+var player = bs.component([
+    'player'
+  , 'body'
+])
   .needs('physical')
   .needs('attached')
   .needs('controllable')
@@ -42,7 +45,7 @@ var player = bs.component('player')
     this.b2p = new b2Player(this.world, {
         body: this.body
       , fixture: this.fixture
-      , jumpHeight: 20
+      , jumpHeight: 25
     })
 
     this.b2Pos = this.body.m_xf.position
@@ -133,6 +136,7 @@ module.exports = bs.define()
   .use(require('../components/physical'))
   .use(require('../components/controllable'))
   .use(player)
+  .use(require('../components/gravity'))
 
 module.exports.prototype.fireBullet = function() {
   this.shootTimer = 10

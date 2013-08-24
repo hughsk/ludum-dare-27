@@ -7,8 +7,6 @@ var b2BodyDef = Box2D.Dynamics.b2BodyDef
 var b2Vec2 = Box2D.Common.Math.b2Vec2
 var b2Body = Box2D.Dynamics.b2Body
 
-var body =
-
 module.exports = bs.define()
   .use(require('../components/attached'))
   .use(require('../components/physical'))
@@ -31,6 +29,7 @@ module.exports = bs.define()
   .use(require('../components/bounce-burst'))
   .use(require('../components/draw-circle')(5, '#EA6437'))
   .use(require('../components/harmful')(false))
+  .use(require('../components/gravity'))
   .use(require('../components/projectile')({
     key: 'shooter'
   }))

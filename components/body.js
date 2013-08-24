@@ -14,5 +14,8 @@ function createBody(body, fixture) {
       this.body.DestroyFixture(this.fixture)
       this.world.DestroyBody(this.body)
       this.game.remove(this)
+      delete this.body
+      delete this.world
+      delete this.game
     })
 }

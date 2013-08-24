@@ -25,8 +25,8 @@ function Game(canvas) {
   this.height = canvas.height
   this.tickrate = 1 / 60
 
-  this.gravity = new b2Vec2(0, 40)
-  this.world = new b2World(this.gravity, true)
+  this.gravity = new b2Vec2(0, 0.75)
+  this.world = new b2World(new b2Vec2, true)
 
   this.field = field(this)
   this.camera = camera(this, this.field)
@@ -44,12 +44,20 @@ inherits(Game, Manager)
 Game.prototype.start = function() {
   this.player = new (require('./entities/player'))
   this.add(this.player)
+
+  var Enemy = require('./components/enemy')(2, 2, 0, 0)
+  for (var _i = 0; _i < 10; _i += 1) {
+    var en = new Enemy
+    this.add(en)
+  }
 }
 
 var framecounter = fps({ every: 1, decay: 0.5 })
 Game.prototype.tick = function() {
   framecounter.tick()
+  // console.log('prestep')
   this.world.Step(this.tickrate, 8, 3)
+  // console.log('poststep')
   this.camera.tick()
 
   for (var i = 0; i < this.queue.length; i += 1)
@@ -80,6 +88,26 @@ Game.prototype.draw = function() {
   var camx = this.camera.pos[0]
   var camy = this.camera.pos[1]
   var floor = Math.floor
+
+  ctx.fillStyle = '#000'
+  for (var obj = world.GetBodyList(); obj; obj = obj.GetNext()) {
+    data = obj.GetUserData()
+    if (!data) continue
+    if (data.type === 'wall') {
+      var x = floor(data.pos[0] * 30 - camx)
+        , y = floor(data.pos[1] * 30 - camy)
+        , w = floor(data.pos[2] * 30 + 1)
+        , h = floor(data.pos[3] * 30 + 1)
+      if (
+        x + w >= 0 ||
+        y + h >= 0 ||
+        x < width ||
+        y < height
+      ) {
+        ctx.fillRect(x + 2, y + 8, w, h)
+      }
+    }
+  }
 
   ctx.fillStyle = '#362F34'
   for (var obj = world.GetBodyList(); obj; obj = obj.GetNext()) {

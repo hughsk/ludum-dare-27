@@ -56,8 +56,10 @@ Game.prototype.tick = function() {
 }
 
 Game.prototype.draw = function() {
-  this.ctx.fillStyle = '#D05931'
+  this.ctx.fillStyle = '#EDB53B'
   this.ctx.fillRect(0, 0, this.width, this.height)
+
+  // this.ctx.save()
 
   var world = this.world
   var width = this.width
@@ -76,8 +78,8 @@ Game.prototype.draw = function() {
     if (data.type === 'wall') {
       var x = floor(data.pos[0] * 30 - camx)
         , y = floor(data.pos[1] * 30 - camy)
-        , w = floor(data.pos[2] * 30)
-        , h = floor(data.pos[3] * 30)
+        , w = floor(data.pos[2] * 30 + 1)
+        , h = floor(data.pos[3] * 30 + 1)
       if (
         x + w >= 0 ||
         y + h >= 0 ||
@@ -96,5 +98,6 @@ Game.prototype.draw = function() {
   ctx.fillStyle = '#FFCFBF'
   ctx.fillRect(mousex - 3, mousey - 3, 6, 6)
 
+  // this.ctx.restore()
   this.camera.draw()
 }

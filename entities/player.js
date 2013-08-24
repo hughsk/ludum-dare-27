@@ -2,6 +2,8 @@ var Box2D = require('box2dweb-commonjs').Box2D
 var b2Player = require('box2d-player')(Box2D)
 var bs = require('bindlestiff')
 
+var Bullet = require('./player-bullet')
+
 var tau = Math.PI * 2
 var round = Math.round
 var abs = Math.abs
@@ -23,7 +25,7 @@ var player = bs.component('player')
     var def = new b2BodyDef
     def.position = new b2Vec2(0, -5)
     def.type = b2Body.b2_dynamicBody
-    def.userData = null
+    def.userData = {}
     def.fixedRotation = true
 
     this.body = this.world.CreateBody(def)
@@ -67,8 +69,13 @@ var player = bs.component('player')
     this.right.on('begin', function() { self.blockedRight += 1 })
     this.left.on('end',    function() { self.blockedLeft -= 1 })
     this.right.on('end',   function() { self.blockedRight -= 1 })
+
+    this.shootTimer = 0
   })
   .on('tick', function() {
+    this.body.SetActive(true)
+    this.body.SetAwake(true)
+
     var xspd = this.body.m_linearVelocity.x =
         this.controls.left  && !this.blockedLeft  ? -14
       : this.controls.right && !this.blockedRight ? +14
@@ -88,6 +95,21 @@ var player = bs.component('player')
       this.rotation = 0
     }
 
+    if (this.shootTimer > 0) {
+      this.shootTimer -= 1
+    } else
+    if (this.controls.shoot) {
+      this.shootTimer = 10
+      var bullet = new Bullet
+      bullet.body.SetPosition(new b2Vec2(
+          this.body.m_xf.position.x
+        , this.body.m_xf.position.y - 1
+      ))
+
+      bullet.body.ApplyImpulse({ x: 0, y: -50 }, bullet.body.GetWorldCenter())
+      this.game.add(bullet)
+    }
+
     if (this.controls.jump && this.b2p.jump()) {
       this.pop += 8
     }
@@ -104,7 +126,7 @@ var player = bs.component('player')
     ctx.save()
     ctx.translate(x, y)
     ctx.rotate(this.rotation)
-    ctx.fillStyle = '#FFCFBF'
+    ctx.fillStyle = '#362F34'
     ctx.fillRect(
         -15 - this.pop
       , -15 - this.pop

@@ -8,8 +8,13 @@ var controls = require('kb-controls')({
   , '<right>': 'right'
 
   , 'W': 'jump'
+  , 'Z': 'jump'
   , '<up>': 'jump'
   , '<space>': 'jump'
+
+  , '<mouse 1>': 'shoot'
+  , '<shift>': 'shoot'
+  , 'X': 'shoot'
 })
 
 module.exports = bs.component('controllable')

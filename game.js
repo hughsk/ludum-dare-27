@@ -76,8 +76,8 @@ Game.prototype.draw = function() {
     if (data.type === 'wall') {
       var x = floor(data.pos[0] * 30 - camx)
         , y = floor(data.pos[1] * 30 - camy)
-        , w = floor(data.pos[2] * 30) - 1
-        , h = floor(data.pos[3] * 30) - 1
+        , w = floor(data.pos[2] * 30)
+        , h = floor(data.pos[3] * 30)
       if (
         x + w >= 0 ||
         y + h >= 0 ||
@@ -93,7 +93,7 @@ Game.prototype.draw = function() {
   for (var i = 0; i < l; i += 1)
     this.instances[i].trigger('draw', ctx, this)
 
-  ctx.fillStyle = '#0f0'
+  ctx.fillStyle = '#FFCFBF'
   ctx.fillRect(mousex - 3, mousey - 3, 6, 6)
 
   this.camera.draw()

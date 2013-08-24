@@ -30,6 +30,7 @@ var player = bs.component('player')
     this.rotation = 0
     this.rotating = false
     this.lastangle = 1
+    this.pop = 0
 
     var fixdef = new b2FixtureDef
     fixdef.shape = new b2CircleShape(0.49)
@@ -43,13 +44,37 @@ var player = bs.component('player')
     })
 
     this.b2Pos = this.body.m_xf.position
+
+    ;[-1, 1].forEach(function(dir) {
+      this.left = this.b2p.createSensor([
+          [-0.65, -0.40]
+        , [-0.48, -0.40]
+        , [-0.48, -0.45]
+        , [-0.65, -0.45]
+      ])
+      this.right = this.b2p.createSensor([
+          [+0.65, -0.40]
+        , [+0.48, -0.40]
+        , [+0.48, -0.45]
+        , [+0.65, -0.45]
+      ])
+    }.bind(this))
+
+    var self = this
+    this.blockedLeft = 0
+    this.blockedRight = 0
+    this.left.on('begin',  function() { self.blockedLeft += 1 })
+    this.right.on('begin', function() { self.blockedRight += 1 })
+    this.left.on('end',    function() { self.blockedLeft -= 1 })
+    this.right.on('end',   function() { self.blockedRight -= 1 })
   })
   .on('tick', function() {
     var xspd = this.body.m_linearVelocity.x =
-        this.controls.left  ? -14
-      : this.controls.right ? +14
+        this.controls.left  && !this.blockedLeft  ? -14
+      : this.controls.right && !this.blockedRight ? +14
       : 0
 
+    this.pop *= 0.95
     if (this.rotating) {
       this.rotation += xspd > 0
         ? +0.18
@@ -63,11 +88,14 @@ var player = bs.component('player')
       this.rotation = 0
     }
 
-    if (this.controls.jump) this.b2p.jump()
+    if (this.controls.jump && this.b2p.jump()) {
+      this.pop += 8
+    }
     this.rotating = ((abs(this.body.m_linearVelocity.y)) > 0.2)
 
     tempPosition[0] = round(this.b2Pos.x)
     tempPosition[1] = round(this.b2Pos.y)
+    this.pop = this.pop > 8 ? 8 : this.pop
     this.game.field.move(tempPosition)
   })
   .on('draw', function(ctx, game) {
@@ -75,13 +103,14 @@ var player = bs.component('player')
     var y = this.b2p.body.m_xf.position.y * 30 - game.camera.pos[1]
     ctx.save()
     ctx.translate(x, y)
-    ctx.rotate(
-        this.body.m_linearVelocity.x > 0
-      ? this.rotation
-      : this.rotation
-    )
+    ctx.rotate(this.rotation)
     ctx.fillStyle = '#FFCFBF'
-    ctx.fillRect(-15, -15, 30, 30)
+    ctx.fillRect(
+        -15 - this.pop
+      , -15 - this.pop
+      , 30 + this.pop * 2
+      , 30 + this.pop * 2
+    )
     ctx.restore()
   })
 

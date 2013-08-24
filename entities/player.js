@@ -52,7 +52,7 @@ var player = bs.component('player')
     this.game.field.move(tempPosition)
   })
   .on('draw', function(ctx, game) {
-    ctx.fillStyle = '#00f'
+    ctx.fillStyle = '#FFCFBF'
     var x = this.b2p.body.m_xf.position.x * 30 - 15 - game.camera.pos[0]
     var y = this.b2p.body.m_xf.position.y * 30 - 15 - game.camera.pos[1]
     ctx.fillRect(x, y, 30, 30)

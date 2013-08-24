@@ -56,7 +56,7 @@ Game.prototype.tick = function() {
 }
 
 Game.prototype.draw = function() {
-  this.ctx.fillStyle = '#fff'
+  this.ctx.fillStyle = '#D05931'
   this.ctx.fillRect(0, 0, this.width, this.height)
 
   var world = this.world
@@ -67,17 +67,17 @@ Game.prototype.draw = function() {
   var mousey = this.mouse.y
   var camx = this.camera.pos[0]
   var camy = this.camera.pos[1]
+  var floor = Math.floor
 
+  ctx.fillStyle = '#362F34'
   for (var obj = world.GetBodyList(); obj; obj = obj.GetNext()) {
     data = obj.GetUserData()
     if (!data) continue
     if (data.type === 'wall') {
-      ctx.fillStyle = '#444'
-      ctx.strokeStyle = '#f00'
-      var x = data.pos[0] * 30 + 1 - camx
-        , y = data.pos[1] * 30 + 1 - camy
-        , w = data.pos[2] * 30 - 2
-        , h = data.pos[3] * 30 - 2
+      var x = floor(data.pos[0] * 30 - camx)
+        , y = floor(data.pos[1] * 30 - camy)
+        , w = floor(data.pos[2] * 30) - 1
+        , h = floor(data.pos[3] * 30) - 1
       if (
         x + w >= 0 ||
         y + h >= 0 ||
@@ -85,7 +85,6 @@ Game.prototype.draw = function() {
         y < height
       ) {
         ctx.fillRect(x, y, w, h)
-        ctx.strokeRect(x, y, w, h)
       }
     }
   }

@@ -1,6 +1,7 @@
 var Manager = require('bindlestiff/manager')
 var inherits = require('inherits')
 var trap = require('pointer-trap')
+var camera = require('./lib/camera')
 var field = require('./lib/field')
 
 var Box2D = require('box2dweb-commonjs').Box2D
@@ -23,6 +24,7 @@ function Game(canvas) {
   this.world = new b2World(this.gravity, true)
 
   this.field = field(this)
+  this.camera = camera(this, this.field)
 
   this.pointer = trap(this.canvas)
   this.mouse = this.pointer.pos
@@ -32,6 +34,8 @@ function Game(canvas) {
 inherits(Game, Manager)
 
 Game.prototype.tick = function() {
+  this.camera.tick()
+
   var l = this.instances.length
   for (var i = 0; i < l; i += 1)
     this.instances[i].trigger('tick')
@@ -40,6 +44,35 @@ Game.prototype.tick = function() {
 Game.prototype.draw = function() {
   this.ctx.fillStyle = '#fff'
   this.ctx.fillRect(0, 0, this.width, this.height)
+
+  var world = this.world
+  var width = this.width
+  var height = this.height
+  var ctx = this.ctx
+  var camx = this.camera.pos[0]
+  var camy = this.camera.pos[1]
+
+  for (var obj = world.GetBodyList(); obj; obj = obj.GetNext()) {
+    data = obj.GetUserData()
+    if (!data) continue
+    if (data.type === 'wall') {
+      ctx.fillStyle = '#444'
+      ctx.strokeStyle = '#f00'
+      var x = data.pos[0] * 30 + 1 - camx + width / 2
+        , y = data.pos[1] * 30 + 1 - camy + height / 2
+        , w = data.pos[2] * 30 - 2
+        , h = data.pos[3] * 30 - 2
+      if (
+        x + w >= 0 ||
+        y + h >= 0 ||
+        x < width ||
+        y < height
+      ) {
+        ctx.fillRect(x, y, w, h)
+        ctx.strokeRect(x, y, w, h)
+      }
+    }
+  }
 
   var l = this.instances.length
   for (var i = 0; i < l; i += 1)

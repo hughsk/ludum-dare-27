@@ -26,7 +26,7 @@ var player = bs.component([
     var y = this.game.height / 60
 
     var def = new b2BodyDef
-    def.position = new b2Vec2(0, -5)
+    def.position = new b2Vec2(20, 0)
     def.type = b2Body.b2_dynamicBody
     def.userData = {}
     def.fixedRotation = true
@@ -84,6 +84,7 @@ var player = bs.component([
       : this.controls.right && !this.blockedRight ? +14
       : 0
 
+    this.game.ready = this.game.ready || xspd
     this.pop *= 0.95
     if (this.rotating) {
       this.rotation += xspd > 0

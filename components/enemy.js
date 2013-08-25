@@ -8,6 +8,9 @@ var b2BodyDef = Box2D.Dynamics.b2BodyDef
 var b2Vec2 = Box2D.Common.Math.b2Vec2
 var b2Body = Box2D.Dynamics.b2Body
 
+var shootme = new Image
+shootme.src = 'img/shoot-me.png'
+
 module.exports = function(
     size
   , speed
@@ -27,9 +30,11 @@ module.exports = function(
         this.r = size * 15 * (Math.random() * 0.25 + 0.75)
         this.c = '#EB3E38'
         this.flinch = 0
+        this.st = 0
       })
       .on('tick', function() {
         this.flinch *= 0.95
+        this.st += 1
         if (this.flinch)
         if (this.flinch < 0.0025) {
           this.flinch = 0
@@ -40,12 +45,30 @@ module.exports = function(
           this.r = this.base_r * (1 - this.flinch * 0.4)
         }
       })
+      .on('draw', function(ctx) {
+        if (this.game.labels) {
+          ctx.globalAlpha = this.game.labels
+          ctx.drawImage(shootme
+            , this.body.m_xf.position.x * 30 - this.game.camera.pos[0] - 50
+            , this.body.m_xf.position.y * 30 - this.game.camera.pos[1] - 75 - Math.sin(this.st / 6) * 10
+          )
+          ctx.globalAlpha = 1
+        }
+      })
       .on('damaged', function() {
         this.flinch = 1
       })
       .on('died', function() {
         if (this.flagged) return
         this.flagged = true
+
+        this.game.shot++
+
+        if (this.game.labels)
+        if (this.game.shot > 5) {
+          this.game.labels *= 0.99
+        }
+
         var tx = this.body.m_xf.position.x
         var ty = this.body.m_xf.position.y
         var center = this.body.m_sweep.c
@@ -53,7 +76,7 @@ module.exports = function(
 
         this.game.next(function() {
           for (var j = 1; j <= 3; j += 1)
-          for (var i = 0; i < 1; i += 0.25) {
+          for (var i = 0; i < 1; i += 0.34) {
             var bullet = new Pellet
             var dx = Math.cos(i * tau)
             var dy = Math.sin(i * tau)

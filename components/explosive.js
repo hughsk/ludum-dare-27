@@ -45,8 +45,8 @@ function explosive(force) {
           var dx = Math.cos(i * tau)
           var dy = Math.sin(i * tau)
           bullet.body.SetPosition(new b2Vec2(
-              tx + dx * 0.5
-            , ty + dy * 0.5
+              tx + dx * 0.75
+            , ty + dy * 0.75
           ))
           bullet.body.ApplyImpulse({
               x: dx * 50

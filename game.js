@@ -1,6 +1,7 @@
 var Manager = require('bindlestiff/manager')
 var inherits = require('inherits')
 var trap = require('pointer-trap')
+var fill = require('ndarray-fill')
 var fps = require('fps')
 
 var camera = require('./lib/camera')
@@ -9,6 +10,9 @@ var field = require('./lib/field')
 var Box2D = require('box2dweb-commonjs').Box2D
 var b2World = Box2D.Dynamics.b2World
 var b2Vec2 = Box2D.Common.Math.b2Vec2
+
+var main = new Image
+main.src = 'img/main.png'
 
 module.exports = Game
 
@@ -20,6 +24,21 @@ function Game(canvas) {
   this.queue = []
   this.ticks = []
   this.flash = 0
+
+  this.shot   = 0
+  this.title  = true
+  this.ready  = false
+  this.labels = 1
+
+  this.level  = 1
+  this.levels = {
+      speed : function(level) { return (Math.pow(level, 0.55) + level / 100) * 0.04 }
+    , health: function(level) { return Math.pow(level, 0.4) + level / 100 }
+  }
+
+  setInterval(function() {
+    this.level += 1
+  }.bind(this), 10000)
 
   this.canvas = canvas
   this.ctx = canvas.getContext('2d')
@@ -85,6 +104,14 @@ Game.prototype.draw = function() {
   var camy = this.camera.pos[1]
   var floor = Math.floor
 
+  if (this.labels)
+  if (this.labels < 0.005) {
+    this.labels = 0
+  } else
+  if (this.labels !== 1) {
+    this.labels *= 0.99
+  }
+
   this.field.gridCache.each(function(canvas) {
     var x = floor((canvas.position[0]) * canvas.width - camx)
     var y = floor((canvas.position[1]) * canvas.height - camy)
@@ -103,6 +130,12 @@ Game.prototype.draw = function() {
   ctx.strokeRect(mousex - 5, mousey - 5, 10, 10)
 
   this.camera.draw()
+
+  if (this.title) {
+    ctx.drawImage(main, 200-camx, -145-camy)
+    if (this.camera.pos[0] < -this.width)  this.title = false
+    if (this.camera.pos[1] < -this.height) this.title = false
+  }
 
   if (this.flash)
   if (this.flash < 0.005) {

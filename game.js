@@ -74,11 +74,6 @@ Game.prototype.tick = function() {
 }
 
 Game.prototype.draw = function() {
-  this.ctx.fillStyle = '#EDB53B'
-  this.ctx.fillRect(0, 0, this.width, this.height)
-
-  // this.ctx.save()
-
   var world = this.world
   var width = this.width
   var height = this.height
@@ -89,45 +84,13 @@ Game.prototype.draw = function() {
   var camy = this.camera.pos[1]
   var floor = Math.floor
 
-  ctx.fillStyle = '#000'
-  for (var obj = world.GetBodyList(); obj; obj = obj.GetNext()) {
-    data = obj.GetUserData()
-    if (!data) continue
-    if (data.type === 'wall') {
-      var x = floor(data.pos[0] * 30 - camx)
-        , y = floor(data.pos[1] * 30 - camy)
-        , w = floor(data.pos[2] * 30 + 1)
-        , h = floor(data.pos[3] * 30 + 1)
-      if (
-        x + w >= 0 ||
-        y + h >= 0 ||
-        x < width ||
-        y < height
-      ) {
-        ctx.fillRect(x + 2, y + 8, w, h)
-      }
-    }
-  }
-
-  ctx.fillStyle = '#362F34'
-  for (var obj = world.GetBodyList(); obj; obj = obj.GetNext()) {
-    data = obj.GetUserData()
-    if (!data) continue
-    if (data.type === 'wall') {
-      var x = floor(data.pos[0] * 30 - camx)
-        , y = floor(data.pos[1] * 30 - camy)
-        , w = floor(data.pos[2] * 30 + 1)
-        , h = floor(data.pos[3] * 30 + 1)
-      if (
-        x + w >= 0 ||
-        y + h >= 0 ||
-        x < width ||
-        y < height
-      ) {
-        ctx.fillRect(x, y, w, h)
-      }
-    }
-  }
+  this.field.gridCache.each(function(canvas) {
+    var x = floor((canvas.position[0]) * canvas.width - camx)
+    var y = floor((canvas.position[1]) * canvas.height - camy)
+    if (x > -960 && y > -960)
+    if (x < width && y < height)
+      ctx.drawImage(canvas.canvas, x, y, canvas.width, canvas.height)
+  })
 
   var l = this.instances.length
   for (var i = 0; i < l; i += 1)

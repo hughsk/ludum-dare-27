@@ -45,11 +45,8 @@ Game.prototype.start = function() {
   this.player = new (require('./entities/player'))
   this.add(this.player)
 
-  var Enemy = require('./components/enemy')(2, 2, 0, 0)
-  for (var _i = 0; _i < 10; _i += 1) {
-    var en = new Enemy
-    this.add(en)
-  }
+  var Spawner = require('./lib/spawner')
+  var spawner = new Spawner(this)
 }
 
 var framecounter = fps({ every: 1, decay: 0.5 })

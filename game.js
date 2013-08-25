@@ -168,6 +168,7 @@ Game.prototype.draw = function() {
   this.score_display += (this.score - this.score_display) * 0.1
   if (this.score_display - this.score > -1) this.score_display = this.score
   if (this.score) this.drawScore(this.score_display)
+  if (this.level > 1) this.drawLevel(this.level * 10 - 10)
 
   ctx.fillStyle = '#FFCFBF'
   ctx.strokeStyle = '#000'
@@ -181,10 +182,26 @@ var numbers = require('dup')(10).map(function(n, i) {
   return img
 })
 
+var round = new Image
+round.src = 'img/big/round.png'
+var bignumbers = require('dup')(10).map(function(n, i) {
+  var img = new Image
+  img.src = 'img/big/' + i + '.png'
+  return img
+})
+
 Game.prototype.drawScore = function(n) {
   n = String(Math.floor(n))
   for (var i = 0; i < n.length; i += 1) {
     this.ctx.drawImage(numbers[n.charAt(i)], i * 14 + 12, 32)
+  }
+}
+
+Game.prototype.drawLevel = function(n) {
+  n = String(Math.floor(n))
+  this.ctx.drawImage(round, this.width - 200 - 10, this.height - 48 - 16)
+  for (var i = 0; i < n.length; i += 1) {
+    this.ctx.drawImage(bignumbers[n.charAt(i)], this.width - (n.length * 36) + i * 36 - 18, this.height - 24 - 96 - 32)
   }
 }
 

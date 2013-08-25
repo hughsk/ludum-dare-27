@@ -14,8 +14,8 @@ function targetPlayer(speed) {
       var cx = this.body.m_xf.position.x
       var cy = this.body.m_xf.position.y
       var a = Math.atan2(ty - cy, tx - cx)
-      tempVec.x = Math.cos(a) * speed
-      tempVec.y = Math.sin(a) * speed
+      tempVec.x = Math.cos(a) * speed + Math.random() * 0.1 - 0.05
+      tempVec.y = Math.sin(a) * speed + Math.random() * 0.1 - 0.05
       this.body.ApplyImpulse(tempVec, this.body.GetWorldCenter())
     })
 }

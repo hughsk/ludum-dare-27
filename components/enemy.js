@@ -1,4 +1,5 @@
 var Box2D = require('box2dweb-commonjs').Box2D
+var lighten = require('../lib/color').lighten
 var bs = require('bindlestiff')
 
 var b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
@@ -16,6 +17,33 @@ module.exports = function(
   return bs.define()
     .use(require('../components/attached'))
     .use(require('../components/physical'))
+    .use(require('../components/health')(10))
+    .use(bs.component()
+      .on('init', function() {
+        this.base_r =
+        this.r = size * 15 * (Math.random() * 0.25 + 0.75)
+        this.c = '#EB3E38'
+        this.flinch = 0
+      })
+      .on('tick', function() {
+        this.flinch *= 0.95
+        if (this.flinch)
+        if (this.flinch < 0.0025) {
+          this.flinch = 0
+          this.c = '#EB3E38'
+          this.r = this.base_r
+        } else {
+          this.c = lighten('#EB3E38', (this.flinch * 200)|0)
+          this.r = this.base_r * (1 - this.flinch * 0.4)
+        }
+      })
+      .on('damaged', function() {
+        this.flinch = 1
+      })
+      .on('died', function() {
+        this.flagged = true
+      })
+    )
     .use(require('../components/body')(
       function createBody() {
         var bd = new b2BodyDef
@@ -29,15 +57,16 @@ module.exports = function(
       function createFixture() {
         var fd = new b2FixtureDef
         fd.restitution = 0.5
-        fd.shape = new b2CircleShape(0.5 * size)
+        fd.shape = new b2CircleShape(0.5 * this.r / 15)
         return fd
       }
     ))
-    .use(require('../components/harmful')(true))
+    .use(require('../components/harmful')(0, 1))
     .use(require('../components/target-player')(speed))
+    .use(require('../components/vulnerable')(1))
     .use(shapes)
 
   function shapes(def) {
-    return require('../components/draw-circle')(size * 15, '#EB3E38')(def)
+    return require('../components/draw-circle')()(def)
   }
 }

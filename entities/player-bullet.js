@@ -23,12 +23,17 @@ module.exports = bs.define()
       var fd = new b2FixtureDef
       fd.restitution = 0.5
       fd.shape = new b2CircleShape(0.5/3)
+      this.r = 5
       return fd
     }
   ))
   .use(require('../components/bounce-burst'))
-  .use(require('../components/draw-circle')(5, '#EA6437'))
-  .use(require('../components/harmful')(false))
+  .use(bs.component()
+    .on('init', function() {
+      this.c = '#362F34'
+    }))
+  .use(require('../components/draw-circle')(5))
+  .use(require('../components/harmful')(1, 1))
   .use(require('../components/gravity'))
   .use(require('../components/projectile')({
     key: 'shooter'

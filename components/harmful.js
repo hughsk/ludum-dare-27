@@ -2,13 +2,15 @@ var bs = require('bindlestiff')
 
 module.exports = harmful
 
-var cache = {}
-function harmful(toPlayer) {
-  toPlayer = !!toPlayer
-  return cache[toPlayer] = cache[toPlayer] ||
-    bs.component('harmful')
+function harmful(group, damage) {
+  damage = parseInt(damage, 10)
+  group = parseInt(group, 10)
+
+  return bs.component('harmful')
       .needs('body')
       .on('init', function() {
-        this.body.m_userData.harmful = toPlayer ? 1 : -1
+        this.body.m_userData = this.body.m_userData || {}
+        this.body.m_userData.harmful_damage = damage
+        this.body.m_userData.harmful_group = group
       })
 }

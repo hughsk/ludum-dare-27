@@ -139,7 +139,7 @@ module.exports = bs.define()
   .use(require('../components/gravity'))
 
 module.exports.prototype.fireBullet = function() {
-  this.shootTimer = 5
+  this.shootTimer = 8
   var bullet = new Bullet
   var tx = this.game.mouse.x - this.game.width / 2
   var ty = this.game.mouse.y - this.game.height / 2

@@ -52,9 +52,7 @@ Game.prototype.start = function() {
 var framecounter = fps({ every: 1, decay: 0.5 })
 Game.prototype.tick = function() {
   framecounter.tick()
-  // console.log('prestep')
   this.world.Step(this.tickrate, 8, 3)
-  // console.log('poststep')
   this.camera.tick()
 
   for (var i = 0; i < this.queue.length; i += 1)
@@ -94,7 +92,9 @@ Game.prototype.draw = function() {
     this.instances[i].trigger('draw', ctx, this)
 
   ctx.fillStyle = '#FFCFBF'
-  ctx.fillRect(mousex - 3, mousey - 3, 6, 6)
+  ctx.strokeStyle = '#000'
+  ctx.fillRect(mousex - 5, mousey - 5, 10, 10)
+  ctx.strokeRect(mousex - 5, mousey - 5, 10, 10)
 
   // this.ctx.restore()
   this.camera.draw()

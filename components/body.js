@@ -7,8 +7,8 @@ function createBody(body, fixture) {
   return bs.component('body')
     .needs('physical')
     .on('init', function() {
-      this.body = this.world.CreateBody(body(this.world))
-      this.fixture = this.body.CreateFixture(fixture(this.body, this.world))
+      this.body = this.world.CreateBody(body.call(this, this.world))
+      this.fixture = this.body.CreateFixture(fixture.call(this, this.body, this.world))
     })
     .on('destroy', function() {
       this.body.DestroyFixture(this.fixture)

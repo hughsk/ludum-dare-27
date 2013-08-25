@@ -11,13 +11,16 @@ var b2Body = Box2D.Dynamics.b2Body
 module.exports = function(
     size
   , speed
-  , shape
+  , health
   , style
 ) {
+  var Pellet = require('../entities/pellet')('#EB3E38')
+  var tau = Math.PI * 2
+
   return bs.define()
     .use(require('../components/attached'))
     .use(require('../components/physical'))
-    .use(require('../components/health')(5))
+    .use(require('../components/health')(health))
     .use(bs.component()
       .on('init', function() {
         this.base_r =
@@ -41,7 +44,31 @@ module.exports = function(
         this.flinch = 1
       })
       .on('died', function() {
+        if (this.flagged) return
         this.flagged = true
+        var tx = this.body.m_xf.position.x
+        var ty = this.body.m_xf.position.y
+        var center = this.body.m_sweep.c
+        var tempVec = {x:0,y:0}
+
+        this.game.next(function() {
+          for (var j = 1; j <= 3; j += 1)
+          for (var i = 0; i < 1; i += 0.25) {
+            var bullet = new Pellet
+            var dx = Math.cos(i * tau)
+            var dy = Math.sin(i * tau)
+            bullet.body.SetPosition(new b2Vec2(
+                tx + dx * 0.5 * (j / 2 - 1)
+              , ty + dy * 0.5 * (j / 2 - 1)
+            ))
+            bullet.body.ApplyImpulse({
+                x: dx * 10
+              , y: dy * 10
+            }, center)
+
+            this.add(bullet)
+          }
+        })
       })
     )
     .use(require('../components/body')(

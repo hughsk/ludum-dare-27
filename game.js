@@ -19,6 +19,7 @@ function Game(canvas) {
 
   this.queue = []
   this.ticks = []
+  this.flash = 0
 
   this.canvas = canvas
   this.ctx = canvas.getContext('2d')
@@ -101,8 +102,20 @@ Game.prototype.draw = function() {
   ctx.fillRect(mousex - 5, mousey - 5, 10, 10)
   ctx.strokeRect(mousex - 5, mousey - 5, 10, 10)
 
-  // this.ctx.restore()
   this.camera.draw()
+
+  if (this.flash)
+  if (this.flash < 0.005) {
+    this.flash = 0
+  } else {
+    this.camera.pos[0] += (Math.random() * 50 - 25) * this.flash
+    this.camera.pos[1] += (Math.random() * 50 - 25) * this.flash
+    this.flash *= 0.95
+    ctx.globalAlpha = this.flash
+    ctx.fillStyle = '#fff'
+    ctx.fillRect(0, 0, this.width, this.height)
+    ctx.globalAlpha = 1
+  }
 }
 
 Game.prototype.enqueue = function(entity) {

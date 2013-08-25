@@ -15,6 +15,7 @@ function explosive(force) {
     .on('explode', function() {
       if (this.flagged) return
       this.flagged = true
+      this.game.flash = 1
 
       var bodies = this.game.find('body')
       var tx = this.body.m_xf.position.x
@@ -28,7 +29,7 @@ function explosive(force) {
           var p = b.body.m_xf.position
           var dy = p.y - ty
           var dx = p.x - tx
-          if (Math.abs(dy) + Math.abs(dx) < 30) {
+          if (Math.abs(dy) + Math.abs(dx) < 20) {
             var a = Math.atan2(dy, dx)
             tempVec.x = Math.cos(a) * 40
             tempVec.y = Math.sin(a) * 40

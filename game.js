@@ -39,6 +39,7 @@ function Game(canvas) {
   this.levels = {
       speed : function(level) { return (Math.pow(level, 0.55) + level / 100) * 0.04 }
     , health: function(level) { return Math.floor(Math.pow(level, 0.4) + level / 100) }
+    , frequency: function(level) { return Math.min(9, Math.floor(1.5 + Math.pow(level, 0.75) + level / 100)) }
   }
 
   this.canvas = canvas
@@ -203,6 +204,24 @@ Game.prototype.drawLevel = function(n) {
   for (var i = 0; i < n.length; i += 1) {
     this.ctx.drawImage(bignumbers[n.charAt(i)], this.width - (n.length * 36) + i * 36 - 18, this.height - 24 - 96 - 32)
   }
+}
+
+Game.prototype.restart = function() {
+  this.flash = 5
+  this.player.health = 15
+  var body = this.player.body
+  this.next(function() {
+    body.SetPosition({ x: 20, y: 0 })
+    body.SetLinearVelocity({ x: 0, y: 0 })
+  })
+  this.level = 1
+  this.levelticker = TEN_SECONDS
+  var spawned = this.find('enemy')
+  for (var i = 0; i < spawned.length; i += 1) {
+    spawned[i].flagged = true
+  }
+  this.ready = false
+  this.score = 0
 }
 
 Game.prototype.enqueue = function(entity) {

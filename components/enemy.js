@@ -21,6 +21,7 @@ module.exports = function(
   var tau = Math.PI * 2
 
   return bs.define()
+    .tag('enemy')
     .use(require('../components/attached'))
     .use(require('../components/physical'))
     .use(require('../components/health')(health))

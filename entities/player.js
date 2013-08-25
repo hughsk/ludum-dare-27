@@ -139,6 +139,7 @@ var player = bs.component([
   })
   .on('damaged', function(damage) {
     this.flinch = 1
+    if (this.health < 1) this.game.restart()
   })
 
 module.exports = bs.define()

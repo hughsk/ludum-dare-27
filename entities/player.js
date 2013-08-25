@@ -81,7 +81,7 @@ var player = bs.component([
     this.body.SetActive(true)
     this.body.SetAwake(true)
     this.health = this.health < 0 ? 0
-      : (this.health < 25 ? this.health : 25)
+      : (this.health < 15 ? this.health : 15)
 
     var xspd = this.body.m_linearVelocity.x =
         this.controls.left  && !this.blockedLeft  ? -14
@@ -145,7 +145,7 @@ module.exports = bs.define()
   .use(require('../components/attached'))
   .use(require('../components/physical'))
   .use(require('../components/controllable'))
-  .use(require('../components/health')(25))
+  .use(require('../components/health')(15))
   .use(player)
   .use(require('../components/vulnerable')(0))
   .use(require('../components/gravity'))

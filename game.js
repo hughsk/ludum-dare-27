@@ -14,6 +14,8 @@ var b2Vec2 = Box2D.Common.Math.b2Vec2
 var main = new Image
 main.src = 'img/main.png'
 
+var TEN_SECONDS = 600
+
 module.exports = Game
 
 function Game(canvas) {
@@ -25,20 +27,19 @@ function Game(canvas) {
   this.ticks = []
   this.flash = 0
 
+  this.score_display = 0
+  this.score  = 0
   this.shot   = 0
   this.title  = true
   this.ready  = false
   this.labels = 1
 
+  this.levelticker = TEN_SECONDS
   this.level  = 1
   this.levels = {
       speed : function(level) { return (Math.pow(level, 0.55) + level / 100) * 0.04 }
     , health: function(level) { return Math.floor(Math.pow(level, 0.4) + level / 100) }
   }
-
-  setInterval(function() {
-    this.level += 1
-  }.bind(this), 10000)
 
   this.canvas = canvas
   this.ctx = canvas.getContext('2d')
@@ -72,6 +73,9 @@ Game.prototype.start = function() {
 
 var framecounter = fps({ every: 1, decay: 0.5 })
 Game.prototype.tick = function() {
+  if (this.ready) this.levelticker -= 1
+  if (this.levelticker <= 0) this.incLevel()
+
   for (var i = 0; i < this.ticks.length; i += 1)
     this.ticks[i].call(this)
   this.ticks.length = 0
@@ -91,6 +95,12 @@ Game.prototype.tick = function() {
       this.instances[i].trigger('destroy')
       i -= 1
     }
+}
+
+Game.prototype.incLevel = function() {
+  this.score += 1000
+  this.level += 1
+  this.levelticker = TEN_SECONDS
 }
 
 Game.prototype.draw = function() {
@@ -124,11 +134,6 @@ Game.prototype.draw = function() {
   for (var i = 0; i < l; i += 1)
     this.instances[i].trigger('draw', ctx, this)
 
-  ctx.fillStyle = '#FFCFBF'
-  ctx.strokeStyle = '#000'
-  ctx.fillRect(mousex - 5, mousey - 5, 10, 10)
-  ctx.strokeRect(mousex - 5, mousey - 5, 10, 10)
-
   this.camera.draw()
 
   if (this.title) {
@@ -140,7 +145,12 @@ Game.prototype.draw = function() {
   ctx.fillStyle = '#362F34'
   ctx.fillRect(0, 0, this.width, 20)
   ctx.fillStyle = '#EB3E38'
-  ctx.fillRect(4, 4, this.width * this.player.health / 25 - 8, 12)
+  ctx.fillRect(4, 4, this.width * this.player.health / 15 - 8, 12)
+
+  ctx.fillStyle = '#362F34'
+  ctx.fillRect(0, this.height - 20, this.width, 20)
+  ctx.fillStyle = '#eee'
+  ctx.fillRect(4, this.height - 16, this.width * this.levelticker / TEN_SECONDS - 8, 12)
 
   if (this.flash)
   if (this.flash < 0.005) {
@@ -153,6 +163,28 @@ Game.prototype.draw = function() {
     ctx.fillStyle = '#fff'
     ctx.fillRect(0, 0, this.width, this.height)
     ctx.globalAlpha = 1
+  }
+
+  this.score_display += (this.score - this.score_display) * 0.1
+  if (this.score_display - this.score > -1) this.score_display = this.score
+  if (this.score) this.drawScore(this.score_display)
+
+  ctx.fillStyle = '#FFCFBF'
+  ctx.strokeStyle = '#000'
+  ctx.fillRect(mousex - 5, mousey - 5, 10, 10)
+  ctx.strokeRect(mousex - 5, mousey - 5, 10, 10)
+}
+
+var numbers = require('dup')(10).map(function(n, i) {
+  var img = new Image
+  img.src = 'img/' + i + '.png'
+  return img
+})
+
+Game.prototype.drawScore = function(n) {
+  n = String(Math.floor(n))
+  for (var i = 0; i < n.length; i += 1) {
+    this.ctx.drawImage(numbers[n.charAt(i)], i * 14 + 12, 32)
   }
 }
 

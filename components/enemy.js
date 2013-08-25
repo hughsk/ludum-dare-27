@@ -58,6 +58,12 @@ module.exports = function(
       .on('damaged', function() {
         this.flinch = 1
       })
+      .on('damaging', function() {
+        var self = this
+        this.game.next(function() {
+          self.trigger('died')
+        })
+      })
       .on('died', function() {
         if (this.flagged) return
         this.flagged = true

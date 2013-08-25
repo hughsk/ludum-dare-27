@@ -1,5 +1,6 @@
 var Box2D = require('box2dweb-commonjs').Box2D
 var b2Player = require('box2d-player')(Box2D)
+var lighten = require('../lib/color').lighten
 var bs = require('bindlestiff')
 
 var Bullet = require('./player-bullet')
@@ -31,6 +32,7 @@ var player = bs.component([
     def.userData = {}
     def.fixedRotation = true
 
+    this.flinch = 0
     this.body = this.world.CreateBody(def)
     this.rotation = 0
     this.rotating = false
@@ -78,6 +80,8 @@ var player = bs.component([
   .on('tick', function() {
     this.body.SetActive(true)
     this.body.SetAwake(true)
+    this.health = this.health < 0 ? 0
+      : (this.health < 25 ? this.health : 25)
 
     var xspd = this.body.m_linearVelocity.x =
         this.controls.left  && !this.blockedLeft  ? -14
@@ -86,6 +90,8 @@ var player = bs.component([
 
     this.game.ready = this.game.ready || xspd
     this.pop *= 0.95
+    this.flinch *= 0.97
+
     if (this.rotating) {
       this.rotation += xspd > 0
         ? +0.18
@@ -122,28 +128,33 @@ var player = bs.component([
     ctx.save()
     ctx.translate(x, y)
     ctx.rotate(this.rotation)
-    ctx.fillStyle = '#362F34'
+    ctx.fillStyle = lighten('#362F34', (this.flinch * 200)|0)
     ctx.fillRect(
         -15 - this.pop
       , -15 - this.pop
-      , 30 + this.pop * 2
-      , 30 + this.pop * 2
+      ,  30 + this.pop * 2
+      ,  30 + this.pop * 2
     )
     ctx.restore()
+  })
+  .on('damaged', function(damage) {
+    this.flinch = 1
   })
 
 module.exports = bs.define()
   .use(require('../components/attached'))
   .use(require('../components/physical'))
   .use(require('../components/controllable'))
+  .use(require('../components/health')(25))
   .use(player)
+  .use(require('../components/vulnerable')(0))
   .use(require('../components/gravity'))
 
 module.exports.prototype.fireBullet = function() {
   this.shootTimer = 8
   var bullet = new Bullet
-  var tx = this.game.mouse.x - this.game.width / 2
-  var ty = this.game.mouse.y - this.game.height / 2
+  var tx = this.game.mouse.x - (this.body.m_xf.position.x * 30 - this.game.camera.pos[0])
+  var ty = this.game.mouse.y - (this.body.m_xf.position.y * 30 - this.game.camera.pos[1])
   var a = Math.atan2(ty, tx)
   var rx = Math.cos(a)
   var ry = Math.sin(a)

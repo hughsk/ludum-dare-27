@@ -25,16 +25,18 @@ function explosive(force) {
 
       for (var i = 0; i < bodies.length; i += 1) {
         var b = bodies[i]
-        if (b !== this.game.player.body) {
-          var p = b.body.m_xf.position
-          var dy = p.y - ty
-          var dx = p.x - tx
-          if (Math.abs(dy) + Math.abs(dx) < 20) {
-            var a = Math.atan2(dy, dx)
-            tempVec.x = Math.cos(a) * 40
-            tempVec.y = Math.sin(a) * 40
-            b.body.ApplyImpulse(tempVec, center)
+        var p = b.body.m_xf.position
+        var dy = p.y - ty
+        var dx = p.x - tx
+        if (Math.abs(dy) + Math.abs(dx) < 20) {
+          var a = Math.atan2(dy, dx)
+          tempVec.x = Math.cos(a) * 40
+          tempVec.y = Math.sin(a) * 40
+          b.body.ApplyImpulse(tempVec, center)
+          if (b !== this.game.player) {
             b.trigger('damaged', 3)
+          } else {
+            b.health += 2
           }
         }
       }

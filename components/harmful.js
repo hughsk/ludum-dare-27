@@ -12,5 +12,6 @@ function harmful(group, damage) {
         this.body.m_userData = this.body.m_userData || {}
         this.body.m_userData.harmful_damage = damage
         this.body.m_userData.harmful_group = group
+        this.body.m_userData.parent = this
       })
 }

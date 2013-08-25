@@ -33,7 +33,7 @@ function Game(canvas) {
   this.level  = 1
   this.levels = {
       speed : function(level) { return (Math.pow(level, 0.55) + level / 100) * 0.04 }
-    , health: function(level) { return Math.pow(level, 0.4) + level / 100 }
+    , health: function(level) { return Math.floor(Math.pow(level, 0.4) + level / 100) }
   }
 
   setInterval(function() {
@@ -136,6 +136,11 @@ Game.prototype.draw = function() {
     if (this.camera.pos[0] < -this.width)  this.title = false
     if (this.camera.pos[1] < -this.height) this.title = false
   }
+
+  ctx.fillStyle = '#362F34'
+  ctx.fillRect(0, 0, this.width, 20)
+  ctx.fillStyle = '#EB3E38'
+  ctx.fillRect(4, 4, this.width * this.player.health / 25 - 8, 12)
 
   if (this.flash)
   if (this.flash < 0.005) {

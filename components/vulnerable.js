@@ -13,12 +13,15 @@ module.exports = function vulnerable(group) {
 
       this.body.m_userData = this.body.m_userData || {}
       this.body.m_userData.vulnerable_group = group
+      this.body.m_userData.parent = this
       b2e(Box2D, this.world).fixture(
         this.fixture
       ).on('begin', function(a, b) {
         var data = a.m_body.m_userData
-        if (data.harmful_group === group)
+        if (data.harmful_group === group) {
           self.trigger('damaged', data.harmful_damage)
+          a.m_body.m_userData.parent.trigger('damaging', data.harmful_damage)
+        }
       })
     })
 }

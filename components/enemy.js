@@ -34,9 +34,10 @@ module.exports = function(
       }
     ))
     .use(require('../components/harmful')(true))
+    .use(require('../components/target-player')(speed))
     .use(shapes)
 
   function shapes(def) {
-    return require('../components/draw-circle')(size * 15, '#00f')(def)
+    return require('../components/draw-circle')(size * 15, '#EB3E38')(def)
   }
 }

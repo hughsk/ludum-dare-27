@@ -17,7 +17,7 @@ module.exports = function(
   return bs.define()
     .use(require('../components/attached'))
     .use(require('../components/physical'))
-    .use(require('../components/health')(10))
+    .use(require('../components/health')(5))
     .use(bs.component()
       .on('init', function() {
         this.base_r =

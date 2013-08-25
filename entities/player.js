@@ -156,5 +156,6 @@ module.exports.prototype.fireBullet = function() {
       x: rx * 35 + this.body.m_linearVelocity.x
     , y: ry * 35 + this.body.m_linearVelocity.y
   }, bullet.body.GetWorldCenter())
+
   this.game.enqueue(bullet)
 }

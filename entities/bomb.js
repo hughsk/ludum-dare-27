@@ -1,4 +1,5 @@
 var Box2D = require('box2dweb-commonjs').Box2D
+var b2e = require('box2d-events')
 var bs = require('bindlestiff')
 
 var b2CircleShape = Box2D.Collision.Shapes.b2CircleShape
@@ -13,34 +14,34 @@ module.exports = bs.define()
   .use(require('../components/body')(
     function createBody() {
       var bd = new b2BodyDef
-      bd.position = new b2Vec2(0, -5)
+      bd.position = new b2Vec2(Math.random()*5, Math.random()*5-5)
       bd.type = b2Body.b2_dynamicBody
       bd.userData = {}
-      bd.fixedRotation = true
+      bd.fixedRotation = false
+      bd.m_linearDamping = 1
       return bd
     },
     function createFixture() {
       var fd = new b2FixtureDef
       fd.restitution = 0.5
-      fd.shape = new b2CircleShape(0.5/3)
-      this.r = 5
+      fd.shape = new b2CircleShape(0.5)
       return fd
     }
   ))
-  .use(require('../components/bounce-burst'))
+  .use(require('../components/explosive')(100))
   .use(bs.component()
     .on('init', function() {
+      var self = this
       this.c = '#362F34'
-      this.t = 60 * 2
-    })
-    .on('tick', function() {
-      this.t -= 1
-      if (!this.t) this.flagged = true
+      this.r = 15
+
+      b2e(Box2D, this.world).fixture(
+        this.fixture
+      ).on('begin', function(a, b) {
+        if (a.m_body === self.game.player.body)
+          self.trigger('explode')
+      })
     })
   )
-  .use(require('../components/draw-circle')(5))
-  .use(require('../components/harmful')(1, 1))
-  .use(require('../components/gravity'))
-  .use(require('../components/projectile')({
-    key: 'shooter'
-  }))
+  .use(require('../components/draw-circle')())
+

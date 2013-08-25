@@ -18,6 +18,7 @@ function Game(canvas) {
   Manager.call(this)
 
   this.queue = []
+  this.ticks = []
 
   this.canvas = canvas
   this.ctx = canvas.getContext('2d')
@@ -51,6 +52,10 @@ Game.prototype.start = function() {
 
 var framecounter = fps({ every: 1, decay: 0.5 })
 Game.prototype.tick = function() {
+  for (var i = 0; i < this.ticks.length; i += 1)
+    this.ticks[i].call(this)
+  this.ticks.length = 0
+
   framecounter.tick()
   this.world.Step(this.tickrate, 8, 3)
   this.camera.tick()
@@ -102,4 +107,8 @@ Game.prototype.draw = function() {
 
 Game.prototype.enqueue = function(entity) {
   this.queue.push(entity)
+}
+
+Game.prototype.next = function(tick) {
+  this.ticks.push(tick)
 }

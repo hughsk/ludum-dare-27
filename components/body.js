@@ -5,6 +5,7 @@ module.exports = createBody
 
 function createBody(body, fixture) {
   return bs.component('body')
+    .needs('attached')
     .needs('physical')
     .on('init', function() {
       this.body = this.world.CreateBody(body.call(this, this.world))

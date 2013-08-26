@@ -21,7 +21,7 @@ module.exports = Game
 var hiscore = document.getElementById('score')
 function displayHighscore(hi) {
   hi = hi || parseInt(window.localStorage.getItem('hurry:hiscore'), 10)
-  hiscore.innerHTML = String(hi)
+  hiscore.innerHTML = String(+hi|0)
 }
 
 function updateHighscore(hi) {

@@ -20,13 +20,14 @@ module.exports = Game
 
 var hiscore = document.getElementById('score')
 function displayHighscore(hi) {
-  hi = hi || parseInt(window.localStorage.getItem('hurry:hiscore'), 10)
+  hi = hi || parseInt(window.localStorage.getItem('hurry:hiscorer'), 10)
+  if (isNaN(hi)) hi = 0
   hiscore.innerHTML = String(+hi|0)
 }
 
 function updateHighscore(hi) {
-  hi = Math.max(hi, parseInt(window.localStorage.getItem('hurry:hiscore'), 10))
-  window.localStorage.setItem('hurry:hiscore', String(parseInt(hi, 10)))
+  hi = Math.max(hi, parseInt(window.localStorage.getItem('hurry:hiscorer'), 10))
+  window.localStorage.setItem('hurry:hiscorer', String(parseInt(hi, 10)))
   displayHighscore(hi)
 }
 

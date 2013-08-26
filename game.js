@@ -18,6 +18,21 @@ var TEN_SECONDS = 600
 
 module.exports = Game
 
+var hiscore = document.getElementById('score')
+function displayHighscore(hi) {
+  hi = hi || parseInt(window.localStorage.getItem('hurry:hiscore'), 10)
+  hiscore.innerHTML = String(hi)
+}
+
+function updateHighscore(hi) {
+  hi = Math.max(hi, parseInt(window.localStorage.getItem('hurry:hiscore'), 10))
+  window.localStorage.setItem('hurry:hiscore', String(parseInt(hi, 10)))
+  displayHighscore(hi)
+}
+
+if (!window.localStorage) displayHighscore = function(){}
+if (!window.localStorage) updateHighscore = function(){}
+
 function Game(canvas) {
   if (!(this instanceof Game)) return new Game(canvas)
 
@@ -33,6 +48,8 @@ function Game(canvas) {
   this.title  = true
   this.ready  = false
   this.labels = 1
+
+  displayHighscore()
 
   this.levelticker = TEN_SECONDS
   this.level  = 1
@@ -214,6 +231,7 @@ Game.prototype.restart = function() {
     body.SetPosition({ x: 20, y: 0 })
     body.SetLinearVelocity({ x: 0, y: 0 })
   })
+  updateHighscore(this.score)
   this.level = 1
   this.levelticker = TEN_SECONDS
   var spawned = this.find('enemy')
